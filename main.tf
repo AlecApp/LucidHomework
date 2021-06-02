@@ -39,6 +39,7 @@ module "alb" {
 
   target_groups = [
     {
+      # name_prefix has a limit of 6 characters... which is strange, because the module example uses "default" as a valid prefix. Investigate?
       name_prefix      = "lucid"
       backend_protocol = "HTTP"
       backend_port     = 80
