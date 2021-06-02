@@ -39,7 +39,7 @@ module "alb" {
 
   target_groups = [
     {
-      name_prefix      = "default"
+      name_prefix      = "lucid"
       backend_protocol = "HTTP"
       backend_port     = 80
       target_type      = "instance"
