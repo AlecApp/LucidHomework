@@ -12,41 +12,15 @@ data "aws_ami" "amazon_linux_2" {
 resource "aws_launch_template" "asg_worker" {
   name = "asg_worker"
 
-  /*
-  block_device_mappings {
-    device_name = "/dev/sda1"
-
-    ebs {
-      volume_size = 8
-    }
-  }
-*/
-  /*
-  capacity_reservation_specification {
-    capacity_reservation_preference = "open"
-  }
-*/
   cpu_options {
     core_count       = 4
     threads_per_core = 2
   }
-  /*
-  credit_specification {
-    cpu_credits = "standard"
-  }
-*/
+
   disable_api_termination = false
 
   ebs_optimized = true
-  /*
-  elastic_gpu_specifications {
-    type = "test"
-  }
 
-  elastic_inference_accelerator {
-    type = "eia1.medium"
-  }
-*/
   iam_instance_profile {
     name = aws_iam_instance_profile.worker_profile.arn
   }
@@ -61,18 +35,6 @@ resource "aws_launch_template" "asg_worker" {
 
   instance_type = "t2.micro"
 
-  /*
-  kernel_id = "test"
-*/
-
-  /*
-  key_name = "test"
-*/
-  /*
-  license_specification {
-    license_configuration_arn = "arn:aws:license-manager:eu-west-1:123456789012:license-configuration:lic-0123456789abcdef0123456789abcdef"
-  }
-*/
   metadata_options {
     http_endpoint               = "enabled"
     http_tokens                 = "required"
@@ -83,20 +45,6 @@ resource "aws_launch_template" "asg_worker" {
     enabled = true
   }
 
-  /*
-  network_interfaces {
-    associate_public_ip_address = true
-  }
-*/
-  /*
-  placement {
-    availability_zone = "us-west-2a"
-  }
-*/
-  /*
-  ram_disk_id = "test"
-*/
-
   vpc_security_group_ids = [aws_security_group.allow_rds.id]
 
   tag_specifications {
@@ -106,9 +54,6 @@ resource "aws_launch_template" "asg_worker" {
       Name = "${var.env}-worker"
     }
   }
-  /*
-  user_data = filebase64("${path.module}/example.sh")
-*/
 }
 
 resource "aws_autoscaling_group" "asg" {

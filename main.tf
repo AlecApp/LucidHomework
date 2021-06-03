@@ -71,7 +71,6 @@ module "alb" {
   }
 }
 
-# Security group to allow Postgres traffic between RDS, Lambda, and Bastion Host
 resource "aws_security_group" "allow_rds" {
   name        = "allow_rds"
   description = "Allow RDS traffic"
@@ -96,7 +95,6 @@ resource "aws_security_group_rule" "rds_out" {
   self              = true
 }
 
-# Security group to allow Postgres traffic between RDS, Lambda, and Bastion Host
 resource "aws_security_group" "allow_http" {
   name        = "allow_http"
   description = "Allow HTTP/HTTPS traffic"
