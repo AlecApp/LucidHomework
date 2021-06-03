@@ -31,7 +31,7 @@ module "alb" {
 
   vpc_id          = module.vpc.vpc_id
   subnets         = module.vpc.public_subnets
-  security_groups = [aws_security_group.allow_http.id]
+  security_groups = [aws_security_group.alb.id, aws_security_group.allow_http.id]
 
   access_logs = {
     bucket = "${var.env}-alb-logs"
@@ -46,17 +46,6 @@ module "alb" {
       target_type      = "instance"
     }
   ]
-
-  /*
-  https_listeners = [
-    {
-      port               = 443
-      protocol           = "HTTPS"
-      certificate_arn    = "SERVER_CERT_ARN"
-      target_group_index = 0
-    }
-  ]
-*/
 
   http_tcp_listeners = [
     {
@@ -107,7 +96,7 @@ resource "aws_security_group_rule" "http_in" {
   to_port           = 80
   protocol          = "tcp"
   security_group_id = aws_security_group.allow_http.id
-  cidr_blocks       = ["0.0.0.0/0"]
+  self              = true
 }
 
 resource "aws_security_group_rule" "http_out" {
@@ -116,25 +105,29 @@ resource "aws_security_group_rule" "http_out" {
   to_port           = 80
   protocol          = "tcp"
   security_group_id = aws_security_group.allow_http.id
-  cidr_blocks       = ["0.0.0.0/0"]
+  self              = true
 }
 
-/*
-resource "aws_security_group_rule" "https_in" {
+resource "aws_security_group" "alb" {
+  name        = "alb_sg"
+  description = "Allow HTTP traffic to ALB"
+  vpc_id      = module.vpc.vpc_id
+}
+
+resource "aws_security_group_rule" "alb_in" {
   type              = "ingress"
-  from_port         = 443
-  to_port           = 443
+  from_port         = 80
+  to_port           = 80
   protocol          = "tcp"
-  security_group_id = aws_security_group.allow_http.id
+  security_group_id = aws_security_group.alb.id
   cidr_blocks       = ["0.0.0.0/0"]
 }
 
-resource "aws_security_group_rule" "https_out" {
+resource "aws_security_group_rule" "alb_out" {
   type              = "egress"
-  from_port         = 443
-  to_port           = 443
-  protocol          = "tcp"
-  security_group_id = aws_security_group.allow_http.id
+  from_port         = 0
+  to_port           = 0
+  protocol          = "-1"
+  security_group_id = aws_security_group.alb.id
   cidr_blocks       = ["0.0.0.0/0"]
 }
-*/

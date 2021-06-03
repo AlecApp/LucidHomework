@@ -45,7 +45,7 @@ resource "aws_launch_template" "asg_worker" {
     enabled = true
   }
 
-  vpc_security_group_ids = [aws_security_group.allow_rds.id]
+  vpc_security_group_ids = [aws_security_group.allow_http.id, aws_security_group.allow_rds.id]
 
   tag_specifications {
     resource_type = "instance"
